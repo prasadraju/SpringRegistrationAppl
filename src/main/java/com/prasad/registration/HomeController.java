@@ -1,8 +1,13 @@
 package com.prasad.registration;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Properties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +18,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import  com.prasad.registration.model.User;
@@ -35,7 +41,7 @@ public class HomeController {
 	 */
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String home(Locale locale, Model model) { 
-		logger.info("Welcome home! The client locale is {}.", locale);
+		logger.info("Welcome home!", locale);
 		
 		Date date = new Date();
 		DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, locale);
@@ -46,6 +52,31 @@ public class HomeController {
 		
 		return "home";
 	}
+	
+	
+	 @RequestMapping(value = "/HelloWorld", method = RequestMethod.GET)
+	 @ResponseBody
+	 public String getData(){
+		 
+	    return getProperty(); 
+     }
+	 
+	 private String getProperty() {
+		 try {
+			 File configDir = new File(System.getProperty("catalina.base"), "conf");
+			 File configFile = new File(configDir, "catalina.properties");
+			 InputStream stream = new FileInputStream(configFile);
+			 Properties props = new Properties();
+			 props.load(stream);
+			return props.getProperty("name");
+
+			} catch (IOException e) {
+				logger.info(e.toString());
+				e.printStackTrace();
+				return e.toString();
+			}
+	 }
+	
 	
 	@RequestMapping(value = "/register", method = RequestMethod.GET)
     public ModelAndView register() {
@@ -106,6 +137,9 @@ public class HomeController {
 		
 		
 	   
+		
+		
+		
 	
 	
 	}
